@@ -1,0 +1,3 @@
+F:\repos\DataFinal\Core\Intermediates\Debug\x64\Core.vcxproj.CopyComplete
+F:\School\VGP220 Data\DataFinal\Core\Intermediates\Debug\x64\Core.vcxproj.CopyComplete
+F:\School\VGP113 UML\UMLFinal\Core\Intermediates\Debug\x64\Core.vcxproj.CopyComplete
