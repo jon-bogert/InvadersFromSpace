@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <fstream>
+#include <time.h>
 #pragma endregion Standard
 
 #include <SFML/Graphics.hpp>

@@ -120,3 +120,19 @@ void Player::ShipChange()
 		sprite->setTextureRect(frame);
 	}
 }
+
+int Player::GetLives() const
+{
+	return lives;
+}
+
+void Player::ReduceLives(const int amt)
+{
+	lives -= amt;
+	std::cout << "LIVES: " << lives << std::endl;
+}
+
+sf::Sprite* Player::GetSprite()
+{
+	return sprite;
+}

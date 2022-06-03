@@ -12,7 +12,7 @@ Enemy::Enemy(Application* app, int type, sf::Vector2<float> startPos, sf::Textur
 {
 	if (type > 2)
 	{
-		std::cout << "FATAL ERROR: Enemy type must be 0, 1, or 2" << std::endl;
+		std::cout << "ERROR: Enemy type must be 0, 1, or 2" << std::endl;
 		abort();
 	}
 

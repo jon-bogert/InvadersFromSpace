@@ -16,6 +16,7 @@ class Player
 	//Members
 	sf::Vector2<float> position;
 	float scale = 0.5f;
+	int lives = 3;
 	std::vector<sf::Sprite*> lasers{};
 
 	//Sprites
@@ -42,5 +43,10 @@ public:
 	bool CheckCollision(Enemy* enemy);
 
 	void ShipChange();
+
+	int GetLives() const;
+	void ReduceLives(const int amt = 1);
+
+	sf::Sprite* GetSprite();
 };
 

@@ -2,21 +2,26 @@
 #include "Game.h"
 #include "InputSystem.h"
 
+const float ENEMY_LASER_SPEED = 500.f;
+
 Game::Game(Application* app)
 	:
 	app(app),
 	window(app->GetWindow()),
-	player(new Player(app))
+	player(new Player(app)),
+	enemyShotClock(new sf::Clock)
 {
 }
 
 Game::~Game()
 {
+	delete enemyShotClock;
 	delete player;
+	for (sf::Sprite* laser : enemyLasers)
+		delete laser;
+	delete enemyLaserTexture;
 	for (Enemy* enemy : enemies)
-	{
 		delete enemy;
-	}
 	delete background;
 	delete bgTexture;
 	delete enemyTexture;
@@ -24,6 +29,7 @@ Game::~Game()
 
 void Game::Start()
 {
+	srand(time(NULL));
 	window->setFramerateLimit(165);
 	InitTextures();
 	background = new sf::Sprite();
@@ -34,6 +40,7 @@ void Game::Start()
 	player->SetupSprite();
 
 	SetupEnemies();
+	enemyShotClock->restart();
 }
 
 void Game::Update()
@@ -42,17 +49,45 @@ void Game::Update()
 	player->Move();
 	player->Fire();
 
-	int i = 0;
-	while (i < enemies.size())
+	EnemyDeath();
+	MoveEnemies();
+	EnemyFire();
+	PlayerDeath();
+}
+
+void Game::EnemyFire()
+{
+	if (enemyShotClock->getElapsedTime().asSeconds() > enemyStotTime && enemies.size() != 0)
 	{
-		if (player->CheckCollision(enemies[i]))
-		{
-			delete enemies[i];
-			enemies.erase(enemies.begin() + i);
-		}
-		else i++;
+		int enemyIndex = rand() % enemies.size();
+		int i = enemyLasers.size();
+
+		enemyLasers.push_back(new sf::Sprite);
+		enemyLasers[i]->setTexture(*enemyLaserTexture);
+		enemyLasers[i]->setTextureRect(sf::IntRect(0, 0, (int)enemyLaserTexture->getSize().x, (int)enemyLaserTexture->getSize().y));
+		enemyLasers[i]->setScale(scale, scale);
+		enemyLasers[i]->setPosition(enemies[enemyIndex]->GetPosition().x + (enemyLaserTexture->getSize().x / 2) * scale,
+			enemies[enemyIndex]->GetPosition().y + enemies[enemyIndex]->GetSprite()->getGlobalBounds().height);
+
+		enemyShotClock->restart();
 	}
 
+	//Check Expiry
+	int i = 0;
+	while (i < enemyLasers.size())
+	{
+		if (enemyLasers[i]->getPosition().y < -50)
+		{
+			delete enemyLasers[i];
+			enemyLasers.erase(enemyLasers.begin() + i);
+		}
+		else
+			i++;
+	}
+}
+
+void Game::MoveEnemies()
+{
 	bool triggDown{};
 	for (Enemy* enemy : enemies)
 	{
@@ -69,12 +104,56 @@ void Game::Update()
 		}
 	}
 	enemyDown = triggDown;
+
+	//Lasers
+	for (sf::Sprite* laser : enemyLasers)
+	{
+		laser->setPosition(laser->getPosition().x, laser->getPosition().y + (ENEMY_LASER_SPEED * app->DeltaTime()));
+	}
+}
+
+void Game::EnemyDeath()
+{
+	int i = 0;
+	while (i < enemies.size())
+	{
+		if (player->CheckCollision(enemies[i]))
+		{
+			delete enemies[i];
+			enemies.erase(enemies.begin() + i);
+		}
+		else i++;
+	}
+}
+
+void Game::PlayerDeath()
+{
+	int i = 0;
+	while (i < enemyLasers.size())
+	{
+		sf::Sprite* laser = enemyLasers[i];
+		if (laser->getGlobalBounds().left < player->GetSprite()->getGlobalBounds().left + player->GetSprite()->getGlobalBounds().width &&
+			laser->getGlobalBounds().left + laser->getGlobalBounds().width > player->GetSprite()->getGlobalBounds().left &&
+			laser->getGlobalBounds().top < player->GetSprite()->getGlobalBounds().top + player->GetSprite()->getGlobalBounds().height &&
+			laser->getGlobalBounds().top + laser->getGlobalBounds().height > player->GetSprite()->getGlobalBounds().top)
+		{
+			player->ReduceLives();
+			delete enemyLasers[i];
+			enemyLasers.erase(enemyLasers.begin() + i);
+			return;
+		}
+		i++;
+	}
 }
 
 void Game::Draw()
 {
 	window->draw(*background);
 	player->Draw();
+	for (sf::Sprite* laser : enemyLasers)
+	{
+		window->draw(*laser);
+	}
 	for (Enemy* enemy : enemies)
 	{
 		enemy->Draw();
@@ -88,6 +167,9 @@ void Game::InitTextures()
 
 	enemyTexture = new::sf::Texture;
 	enemyTexture->loadFromFile("Assets/enemy.png");
+
+	enemyLaserTexture = new sf::Texture;
+	enemyLaserTexture->loadFromFile("Assets/enemy-laser.png");
 }
 
 sf::Texture* Game::GetEnemyTexture()
