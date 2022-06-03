@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\InputSystem.cpp" />
     <ClCompile Include="Source\Game.cpp" />
@@ -184,6 +185,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\InputSystem.h" />
     <ClInclude Include="Source\Game.h" />

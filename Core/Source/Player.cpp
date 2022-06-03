@@ -12,8 +12,8 @@ Player::Player(Application* app)
 {
 	position = { (float)((app->GetResolution().x / 2) - (ss_res.x / 2) * scale), (float)app->GetResolution().y * 0.9f };
 
-	tempTexture = new sf::Texture;
-	tempTexture->loadFromFile("Assets/player.png");
+	texture = new sf::Texture;
+	texture->loadFromFile("Assets/player.png");
 
 	laserTexture = new sf::Texture;
 	laserTexture->loadFromFile("Assets/player-laser.png");
@@ -27,14 +27,14 @@ Player::~Player()
 	}
 	delete laserTexture;
 	delete sprite;
-	delete tempTexture;
+	delete texture;
 }
 
 void Player::SetupSprite()
 {
 	sprite = new sf::Sprite;
 	//std::cout << "Player: " << game->GetTexture("player") << std::endl;
-	sprite->setTexture(*tempTexture);
+	sprite->setTexture(*texture);
 	sprite->setTextureRect(frame);
 	sprite->setScale(scale, scale);
 }
@@ -82,6 +82,28 @@ void Player::Draw()
 	{
 		window->draw(*laser);
 	}
+}
+
+bool Player::CheckCollision(Enemy* enemy)
+{
+	//Enemies
+	int i = 0;
+	while (i < lasers.size())
+	{
+		sf::Sprite* laser = lasers[i];
+		if (laser->getGlobalBounds().left < enemy->GetSprite()->getGlobalBounds().left + enemy->GetSprite()->getGlobalBounds().width &&
+			laser->getGlobalBounds().left + laser->getGlobalBounds().width > enemy->GetSprite()->getGlobalBounds().left &&
+			laser->getGlobalBounds().top < enemy->GetSprite()->getGlobalBounds().top + enemy->GetSprite()->getGlobalBounds().height &&
+			laser->getGlobalBounds().top + laser->getGlobalBounds().height > enemy->GetSprite()->getGlobalBounds().top)
+		{
+			std::cout << enemy->GetPoints() << std::endl; // TODO - Store Points
+			delete lasers[i];
+			lasers.erase(lasers.begin() + i);
+			return true;
+		}
+		i++;
+	}
+	return false;
 }
 
 void Player::ShipChange()

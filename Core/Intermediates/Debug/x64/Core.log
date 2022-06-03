@@ -1,3 +1,2 @@
-﻿  Player.cpp
-F:\School\VGP113 UML\UMLFinal\Core\Source\Player.cpp(56,28): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+﻿  Enemy.cpp
   Core.vcxproj -> F:\School\VGP113 UML\UMLFinal\Build\Debug\x64\Core.exe

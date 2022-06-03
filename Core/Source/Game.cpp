@@ -13,23 +13,27 @@ Game::Game(Application* app)
 Game::~Game()
 {
 	delete player;
-	delete background;
-	for (auto texture : textures)
+	for (Enemy* enemy : enemies)
 	{
-		delete texture.second;
+		delete enemy;
 	}
+	delete background;
+	delete bgTexture;
+	delete enemyTexture;
 }
 
 void Game::Start()
 {
-	window->setFramerateLimit(60);
+	window->setFramerateLimit(165);
 	InitTextures();
 	background = new sf::Sprite();
-	background->setTexture(*GetTexture("bg"));
-	background->setTextureRect(sf::Rect(0, 0, (int)GetTexture("bg")->getSize().x, (int)GetTexture("bg")->getSize().y));
+	background->setTexture(*bgTexture);
+	background->setTextureRect(sf::Rect(0, 0, (int)bgTexture->getSize().x, (int)bgTexture->getSize().y));
 	background->setPosition(0, 0);
-	
+
 	player->SetupSprite();
+
+	SetupEnemies();
 }
 
 void Game::Update()
@@ -37,34 +41,99 @@ void Game::Update()
 	player->ShipChange();
 	player->Move();
 	player->Fire();
+
+	int i = 0;
+	while (i < enemies.size())
+	{
+		if (player->CheckCollision(enemies[i]))
+		{
+			delete enemies[i];
+			enemies.erase(enemies.begin() + i);
+		}
+		else i++;
+	}
+
+	bool triggDown{};
+	for (Enemy* enemy : enemies)
+	{
+		enemy->Move(enemyLeft, enemyDown);
+		if (enemy->GetPosition().x > app->GetResolution().x - enemy->GetSprite()->getGlobalBounds().width && !enemyLeft)
+		{
+			enemyLeft = true;
+			triggDown = true;
+		}
+		else if (enemy->GetPosition().x < 0 && enemyLeft)
+		{
+			enemyLeft = false;
+			triggDown = true;
+		}
+	}
+	enemyDown = triggDown;
 }
 
 void Game::Draw()
 {
 	window->draw(*background);
 	player->Draw();
+	for (Enemy* enemy : enemies)
+	{
+		enemy->Draw();
+	}
 }
 
 void Game::InitTextures()
 {
-	AddTexture("bg", "Assets/stars.png");
-	AddTexture("player", "Assets/player.png");
+	bgTexture = new sf::Texture;
+	bgTexture->loadFromFile("Assets/stars.png");
+
+	enemyTexture = new::sf::Texture;
+	enemyTexture->loadFromFile("Assets/enemy.png");
 }
 
-
-
-void Game::AddTexture(std::string key, std::string path)
+sf::Texture* Game::GetEnemyTexture()
 {
-	textures.emplace(std::make_pair(key, new sf::Texture));
-	if (!textures[key]->loadFromFile(path))
+	return enemyTexture;
+}
+
+void Game::SetupEnemies()
+{
+	int posX{}, posY = 75;
+	int spX = 52, spY = 50;
+
+	//Type 2
+	for (int i = 0; i < 7; i++)
 	{
-		std::cout << "Could not load '" << key << "' from " << path << std::endl;
-		delete textures[key];
-		textures.erase(key);
+		enemies.push_back(new Enemy(app, 2, { (float)posX, (float)posY }, enemyTexture));
+		posX += spX;
 	}
-}
-
-sf::Texture* Game::GetTexture(std::string key)
-{
-	return textures[key];
+	posX = 0;
+	posY += spY;
+	// Type 1
+	for (int i = 0; i < 7; i++)
+	{
+		enemies.push_back(new Enemy(app, 1, { (float)posX, (float)posY }, enemyTexture));
+		posX += spX;
+	}
+	posX = 0;
+	posY += spY;
+	for (int i = 0; i < 7; i++)
+	{
+		enemies.push_back(new Enemy(app, 1, { (float)posX, (float)posY }, enemyTexture));
+		posX += spX;
+	}
+	//Type 0
+	posX = 0;
+	posY += spY;
+	for (int i = 0; i < 7; i++)
+	{
+		enemies.push_back(new Enemy(app, 0, { (float)posX, (float)posY }, enemyTexture));
+		posX += spX;
+	}
+	posX = 0;
+	posY += spY;
+	for (int i = 0; i < 7; i++)
+	{
+		enemies.push_back(new Enemy(app, 0, { (float)posX, (float)posY }, enemyTexture));
+		posX += spX;
+	}
 }

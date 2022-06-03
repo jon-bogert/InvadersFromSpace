@@ -1,9 +1,11 @@
 #pragma once
 #include "Application.h"
 #include "Player.h"
+#include "Enemy.h"
 
 class Application;
 class Player;
+class Enemy;
 
 class Game
 {
@@ -12,10 +14,14 @@ class Game
 	sf::RenderWindow* window;
 
 	//Members
-	std::map<std::string, sf::Texture*> textures; // Store game textures here
+	sf::Texture* bgTexture; // Store game textures here
+	sf::Texture* enemyTexture;
 	sf::Sprite* background = nullptr;
 
 	Player* player;
+	std::vector<Enemy*> enemies{};
+	bool enemyDown{};
+	bool enemyLeft{};
 
 
 public:
@@ -28,11 +34,9 @@ public:
 
 	void InitTextures();
 
-	sf::Texture* GetTexture(std::string key);
-
+	sf::Texture* GetEnemyTexture();
 
 private:
-	void AddTexture(std::string key, std::string path);
-	
+	void SetupEnemies();
 };
 
