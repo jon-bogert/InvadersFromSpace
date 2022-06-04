@@ -34,13 +34,17 @@ sf::Font* Application::GetFont()
 	return font;
 }
 
-void Application::GameLoop()
+void Application::Runtime()
 {
 	Load();
-	//Save();
 	while (window->isOpen())
 	{
+		mm = new MainMenu(this);
+		mm->Runtime();
+		delete mm; mm = nullptr;
+
 		game->Start();
+		clock->restart();
 		while (!game->GetGameOver() && window->isOpen())
 		{
 			sf::Event* windowEvent = new sf::Event;
@@ -64,6 +68,7 @@ void Application::GameLoop()
 		}
 		ResetGame();
 	}
+	Save();
 }
 
 sf::Vector2<int> Application::GetResolution() const
@@ -85,6 +90,36 @@ float Application::DeltaTime() const
 	return deltaTime;
 }
 
+int Application::GetHighScore() const
+{
+	return highScore;
+}
+
+void Application::SetHighScore(const int newHS)
+{
+	highScore = newHS;
+}
+
+int Application::GetPlayerType() const
+{
+	return playerType;
+}
+
+int Application::GetPlayerColor() const
+{
+	return playerColor;
+}
+
+void Application::SetPlayerType(const int type)
+{
+	playerType = type;
+}
+
+void Application::SetPlayerColor(const int color)
+{
+	playerColor = color;
+}
+
 void Application::ResetGame()
 {
 	delete game;
@@ -93,20 +128,17 @@ void Application::ResetGame()
 
 void Application::Load()
 {
-	std::ifstream file("data.sav");
+	std::ifstream file("pls_dont_edit_lol.sav");
+	if (!file.is_open())
+	{
+		Save(); // create new file
+		return;
+	}
 	std::string data;
-	std::string score;
 
-	for (int i = 0; i < 17; i++)
-	{
-		std::getline(file, data);
-	}
-	for (char c : data)
-	{
-		score.push_back(c - 48);
-	}
-	std::cout << score << std::endl;
+	std::getline(file, data);
 
+	highScore = atoi(data.c_str());
 
 	file.close();
 }
@@ -114,29 +146,7 @@ void Application::Load()
 void Application::Save()
 {
 	srand(time(NULL));
-	std::ofstream file("data.sav");
-	for (int i = 0; i < 16; i++)
-	{
-		for (int j = 0; j < rand() % 500; j++)
-		{
-			file << (char)((rand() % 233) + 23);
-		}
-		file << std::endl;
-	}
-	std::string score = std::to_string(highScore);
-	for (char c : score)
-	{
-		file << (char)( c + 48);
-	}
-	file << std::endl;
-
-	for (int i = 0; i < 100; i++)
-	{
-		for (int j = 0; j < rand() % 500; j++)
-		{
-			file << (char)((rand() % 233) + 23);
-		}
-		file << std::endl;
-	}
+	std::ofstream file("pls_dont_edit_lol.sav");
+	file << std::to_string(highScore);
 	file.close();
 }

@@ -5,7 +5,7 @@ int main()
 {
 	Application* application = new Application();
 
-	application->GameLoop();
+	application->Runtime();
 
 	delete application;
 

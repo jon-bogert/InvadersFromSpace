@@ -11,7 +11,10 @@ sf::Vector2<float> moveAxis{};
 //Active Triggers
 bool changeTypeTrig = false;
 bool changeColorTrig = false;
-bool fireTrig = false;
+bool fireTrig = true;
+bool menuSelectTrig = false;
+bool menuDownTrig = false;
+bool menuUpTrig = false;
 
 
 bool InputSystem::MoveLeft()
@@ -83,6 +86,56 @@ bool InputSystem::ChangeColor()
 	}
 	else if (changeColorTrig)
 		changeColorTrig = false;
+	return false;
+}
+
+bool InputSystem::MenuUp()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
+		MoveAxis().y < 0)
+	{
+		if (!menuUpTrig)
+		{
+			menuUpTrig = true;
+			return true;
+		}
+	}
+	else if (menuUpTrig)
+		menuUpTrig = false;
+	return false;
+}
+
+bool InputSystem::MenuDown()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ||
+		MoveAxis().y > 0)
+	{
+		if (!menuDownTrig)
+		{
+			menuDownTrig = true;
+			return true;
+		}
+	}
+	else if (menuDownTrig)
+		menuDownTrig = false;
+	return false;
+}
+
+bool InputSystem::MenuSelect()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ||
+		sf::Joystick::isButtonPressed(0, 0))
+	{
+		if (!menuSelectTrig)
+		{
+			menuSelectTrig = true;
+			return true;
+		}
+	}
+	else if (menuSelectTrig)
+		menuSelectTrig = false;
 	return false;
 }
 

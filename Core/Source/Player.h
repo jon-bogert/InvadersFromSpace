@@ -43,8 +43,6 @@ public:
 	void Draw();
 	bool CheckCollision(Enemy* enemy);
 
-	void ShipChange();
-
 	int GetLives() const;
 	void ReduceLives(const int amt = 1);
 	void AddToScore(const int amt);

@@ -63,7 +63,6 @@ void Game::Start()
 
 void Game::Update()
 {
-	player->ShipChange();
 	player->Move();
 	player->Fire();
 

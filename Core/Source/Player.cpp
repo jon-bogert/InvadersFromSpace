@@ -35,6 +35,8 @@ void Player::SetupSprite()
 	sprite = new sf::Sprite;
 	//std::cout << "Player: " << game->GetTexture("player") << std::endl;
 	sprite->setTexture(*texture);
+	frame.left = app->GetPlayerColor() * ss_res.x;
+	frame.top = app->GetPlayerType() * ss_res.y;
 	sprite->setTextureRect(frame);
 	sprite->setScale(scale, scale);
 
@@ -108,21 +110,6 @@ bool Player::CheckCollision(Enemy* enemy)
 		i++;
 	}
 	return false;
-}
-
-void Player::ShipChange()
-{
-	
-	if (InputSystem::ChangeType())
-	{
-		frame.top = (frame.top + ss_res.y) % (ss_res.y * ss_numTypes);
-		sprite->setTextureRect(frame);
-	}
-	if (InputSystem::ChangeColor())
-	{
-		frame.left = (frame.left + ss_res.x) % (ss_res.x * ss_numColors);
-		sprite->setTextureRect(frame);
-	}
 }
 
 int Player::GetLives() const
