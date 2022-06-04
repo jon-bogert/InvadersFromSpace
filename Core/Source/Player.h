@@ -17,6 +17,7 @@ class Player
 	sf::Vector2<float> position;
 	float scale = 0.5f;
 	int lives = 3;
+	int score = 0;
 	std::vector<sf::Sprite*> lasers{};
 
 	//Sprites
@@ -46,6 +47,7 @@ public:
 
 	int GetLives() const;
 	void ReduceLives(const int amt = 1);
+	void AddToScore(const int amt);
 
 	sf::Sprite* GetSprite();
 };

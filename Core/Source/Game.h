@@ -14,6 +14,8 @@ class Game
 	sf::RenderWindow* window;
 
 	//Members
+	bool gameOver{};
+
 	sf::Texture* bgTexture = nullptr;
 	sf::Texture* enemyTexture = nullptr;
 	sf::Texture* enemyLaserTexture = nullptr;
@@ -28,6 +30,9 @@ class Game
 
 	sf::Clock* enemyShotClock;
 	float enemyStotTime = 1.f;
+
+	sf::Text* scoreText = nullptr;
+	sf::Text* livesText = nullptr;
 
 
 public:
@@ -44,7 +49,13 @@ public:
 
 	void InitTextures();
 
+	void UpdateScoreText(int newScore);
+	void UpdateLivesText(int newLives);
+
 	sf::Texture* GetEnemyTexture();
+
+	void GameOver();
+	bool GetGameOver() const;
 
 private:
 	void SetupEnemies();

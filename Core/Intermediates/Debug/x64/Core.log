@@ -1,10 +1,3 @@
 ﻿  Application.cpp
-  CoreBuilder.cpp
-  Enemy.cpp
-  Game.cpp
-F:\School\VGP113 UML\UMLFinal\Core\Source\Game.cpp(32,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-F:\School\VGP113 UML\UMLFinal\Core\Source\Game.cpp(63,29): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Player.cpp
-F:\School\VGP113 UML\UMLFinal\Core\Source\Player.cpp(56,28): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
+F:\School\VGP113 UML\UMLFinal\Core\Source\Application.cpp(116,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Core.vcxproj -> F:\School\VGP113 UML\UMLFinal\Build\Debug\x64\Core.exe

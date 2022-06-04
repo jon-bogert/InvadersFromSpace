@@ -25,18 +25,36 @@ Game::~Game()
 	delete background;
 	delete bgTexture;
 	delete enemyTexture;
+	delete scoreText;
 }
 
 void Game::Start()
 {
 	srand(time(NULL));
 	window->setFramerateLimit(165);
+
 	InitTextures();
+	//Background
 	background = new sf::Sprite();
 	background->setTexture(*bgTexture);
 	background->setTextureRect(sf::Rect(0, 0, (int)bgTexture->getSize().x, (int)bgTexture->getSize().y));
 	background->setPosition(0, 0);
 
+	//Text
+	scoreText = new sf::Text;
+	scoreText->setFont(*app->GetFont());
+	scoreText->setCharacterSize(20);
+	scoreText->setString("Score: XXXX");
+	scoreText->setPosition(10, 10);
+
+	livesText = new sf::Text;
+	livesText->setFont(*app->GetFont());
+	livesText->setCharacterSize(20);
+	livesText->setString("Lives: X");
+	livesText->setOrigin(livesText->getGlobalBounds().width, 0);
+	livesText->setPosition(app->GetResolution().x - 10, 10);
+	
+	//GameObjects
 	player->SetupSprite();
 
 	SetupEnemies();
@@ -158,6 +176,8 @@ void Game::Draw()
 	{
 		enemy->Draw();
 	}
+	window->draw(*scoreText);
+	window->draw(*livesText);
 }
 
 void Game::InitTextures()
@@ -172,9 +192,29 @@ void Game::InitTextures()
 	enemyLaserTexture->loadFromFile("Assets/enemy-laser.png");
 }
 
+void Game::UpdateScoreText(int newScore)
+{
+	scoreText->setString("Score: " + std::to_string(newScore));
+}
+
+void Game::UpdateLivesText(int newLives)
+{
+	livesText->setString("Lives: " + std::to_string(newLives));
+}
+
 sf::Texture* Game::GetEnemyTexture()
 {
 	return enemyTexture;
+}
+
+void Game::GameOver()
+{
+	gameOver = true;
+}
+
+bool Game::GetGameOver() const
+{
+	return gameOver;
 }
 
 void Game::SetupEnemies()

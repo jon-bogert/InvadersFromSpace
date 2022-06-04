@@ -20,8 +20,12 @@ private:
 	std::string title = "Invders From Space";
 	sf::Color backgroundColor = sf::Color::Black;
 
+	sf::Font* font;
+
 	sf::Clock* clock;
 	float deltaTime{};
+
+	int highScore = 630;
 
 public:
 	Application();
@@ -31,11 +35,17 @@ public:
 
 	sf::RenderWindow* GetWindow();
 	Game* GetGame();
+	sf::Font* GetFont();
 
 	void GameLoop();
 
 	sf::Vector2<int> GetResolution() const;
 	sf::Vector2<float> GetResolutionScale() const;
 	float DeltaTime() const;
+
+private:
+	void ResetGame();
+	void Load();
+	void Save();
 };
 

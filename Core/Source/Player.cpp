@@ -37,6 +37,10 @@ void Player::SetupSprite()
 	sprite->setTexture(*texture);
 	sprite->setTextureRect(frame);
 	sprite->setScale(scale, scale);
+
+	//Setup Text
+	app->GetGame()->UpdateLivesText(lives);
+	app->GetGame()->UpdateScoreText(score);
 }
 
 void Player::Move()
@@ -96,7 +100,7 @@ bool Player::CheckCollision(Enemy* enemy)
 			laser->getGlobalBounds().top < enemy->GetSprite()->getGlobalBounds().top + enemy->GetSprite()->getGlobalBounds().height &&
 			laser->getGlobalBounds().top + laser->getGlobalBounds().height > enemy->GetSprite()->getGlobalBounds().top)
 		{
-			std::cout << enemy->GetPoints() << std::endl; // TODO - Store Points
+			AddToScore(enemy->GetPoints());
 			delete lasers[i];
 			lasers.erase(lasers.begin() + i);
 			return true;
@@ -129,7 +133,14 @@ int Player::GetLives() const
 void Player::ReduceLives(const int amt)
 {
 	lives -= amt;
-	std::cout << "LIVES: " << lives << std::endl;
+	app->GetGame()->UpdateLivesText(lives);
+	if (lives <= 0) app->GetGame()->GameOver();
+}
+
+void Player::AddToScore(const int amt)
+{
+	score += amt;
+	app->GetGame()->UpdateScoreText(score);
 }
 
 sf::Sprite* Player::GetSprite()
