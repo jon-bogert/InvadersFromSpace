@@ -141,6 +141,15 @@ void Game::EnemyDeath()
 		}
 		else i++;
 	}
+	for (Enemy* enemy : enemies)
+	{
+		if (enemy->GetPosition().y > 600) GameOver();
+	}
+	if (enemies.size() <= 0)
+	{
+		player->ResetLasers();
+		SetupEnemies();
+	}
 }
 
 void Game::PlayerDeath()
@@ -214,6 +223,68 @@ void Game::GameOver()
 bool Game::GetGameOver() const
 {
 	return gameOver;
+}
+
+void Game::DeathScreen()
+{
+	bool exitMenu{};
+
+	if (player->GetScore() > app->GetHighScore()) app->SetHighScore(player->GetScore());
+
+	sf::Text youDied;
+	youDied.setFont(*app->GetFont());
+	youDied.setCharacterSize(52);
+	youDied.setString("YOU DIED");
+	youDied.setOrigin(youDied.getLocalBounds().width / 2, 0);
+	youDied.setPosition(app->GetResolution().x / 2, 100);
+
+	sf::Text highScore;
+	highScore.setFont(*app->GetFont());
+	highScore.setCharacterSize(30);
+	highScore.setString("High Score: " + std::to_string(app->GetHighScore()));
+	highScore.setOrigin(highScore.getLocalBounds().width / 2, 0);
+	highScore.setPosition(app->GetResolution().x / 2, 275);
+
+	sf::Text currScore;
+	currScore.setFont(*app->GetFont());
+	currScore.setCharacterSize(30);
+	currScore.setString("Current Score: " + std::to_string(player->GetScore()));
+	currScore.setOrigin(currScore.getLocalBounds().width / 2, 0);
+	currScore.setPosition(app->GetResolution().x / 2, 350);
+
+	sf::Texture* backTexture = new sf::Texture;
+	backTexture->loadFromFile("Assets/back.png");
+	sf::Sprite* backSprite = new sf::Sprite;
+	backSprite->setTexture(*backTexture);
+	backSprite->setTextureRect(sf::IntRect(0, 0, backTexture->getSize().x, backTexture->getSize().y));
+	backSprite->setOrigin(backSprite->getLocalBounds().width / 2, 0);
+	backSprite->setPosition(app->GetResolution().x / 2, 600);
+
+	while (window->isOpen() && !exitMenu)
+	{
+		sf::Event* windowEvent = new sf::Event;
+		while (window->pollEvent(*windowEvent))
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			{
+				window->close();
+			}
+		}
+		delete windowEvent;
+
+		if (InputSystem::MenuSelect()) exitMenu = true;
+
+		window->clear(sf::Color::Black);
+		window->draw(*background);
+		window->draw(youDied);
+		window->draw(highScore);
+		window->draw(currScore);
+		window->draw(*backSprite);
+		window->display();
+	}
+
+	delete backSprite;
+	delete backTexture;
 }
 
 void Game::SetupEnemies()

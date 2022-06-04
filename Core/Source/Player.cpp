@@ -5,6 +5,8 @@
 const float MOVE_SPEED = 100.f;
 const float LASER_SPEED = 500.f;
 
+const float FIRE_RATE = 0.25f;
+
 Player::Player(Application* app)
 	: app(app),
 	window(app->GetWindow()),
@@ -17,6 +19,8 @@ Player::Player(Application* app)
 
 	laserTexture = new sf::Texture;
 	laserTexture->loadFromFile("Assets/player-laser.png");
+
+	shotTimer = new sf::Clock;
 }
 
 Player::~Player()
@@ -28,6 +32,7 @@ Player::~Player()
 	delete laserTexture;
 	delete sprite;
 	delete texture;
+	delete shotTimer;
 }
 
 void Player::SetupSprite()
@@ -57,8 +62,10 @@ void Player::Move()
 
 void Player::Fire()
 {
-	if (InputSystem::Fire())
+	if (InputSystem::Fire() && shotTimer->getElapsedTime().asSeconds() >= FIRE_RATE)
 	{
+		shotTimer->restart();
+
 		int index = lasers.size();
 		lasers.push_back(new sf::Sprite);
 		lasers[index]->setTexture(*laserTexture);
@@ -112,6 +119,15 @@ bool Player::CheckCollision(Enemy* enemy)
 	return false;
 }
 
+void Player::ResetLasers()
+{
+	while (lasers.size() != 0)
+	{
+		delete lasers[0];
+		lasers.erase(lasers.begin());
+	}
+}
+
 int Player::GetLives() const
 {
 	return lives;
@@ -128,6 +144,11 @@ void Player::AddToScore(const int amt)
 {
 	score += amt;
 	app->GetGame()->UpdateScoreText(score);
+}
+
+int Player::GetScore() const
+{
+	return score;
 }
 
 sf::Sprite* Player::GetSprite()

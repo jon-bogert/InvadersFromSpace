@@ -32,6 +32,8 @@ class Player
 	sf::Texture* laserTexture;
 	sf::Vector2<int> laserDim = { 9, 37 };
 
+	sf::Clock* shotTimer;
+
 public:
 	Player(Application* app);
 	~Player();
@@ -42,10 +44,12 @@ public:
 	void Fire();
 	void Draw();
 	bool CheckCollision(Enemy* enemy);
+	void ResetLasers();
 
 	int GetLives() const;
 	void ReduceLives(const int amt = 1);
 	void AddToScore(const int amt);
+	int GetScore() const;
 
 	sf::Sprite* GetSprite();
 };

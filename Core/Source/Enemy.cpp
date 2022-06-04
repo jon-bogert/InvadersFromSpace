@@ -2,7 +2,7 @@
 #include "Enemy.h"
 
 const float MOVE_SPEED = 25.f;
-const int DOWN_AMT = 5;
+const int DOWN_AMT = 20;
 
 Enemy::Enemy(Application* app, int type, sf::Vector2<float> startPos, sf::Texture* texture)
 	:app(app),

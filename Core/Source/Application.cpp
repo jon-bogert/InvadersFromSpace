@@ -66,6 +66,7 @@ void Application::Runtime()
 			game->Draw();
 			window->display();
 		}
+		game->DeathScreen();
 		ResetGame();
 	}
 	Save();

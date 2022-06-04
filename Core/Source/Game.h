@@ -56,8 +56,8 @@ public:
 
 	void GameOver();
 	bool GetGameOver() const;
+	void DeathScreen();
 
-private:
 	void SetupEnemies();
 };
 
